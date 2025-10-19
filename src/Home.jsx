@@ -9,6 +9,20 @@ function Home() {
     setExpandedProject(expandedProject === projectId ? null : projectId);
   };
 
+  // Prevent body scroll when modal is open
+  React.useEffect(() => {
+    if (expandedProject) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [expandedProject]);
+
   const projects = [
     {
       id: 1,

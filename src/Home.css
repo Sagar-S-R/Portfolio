@@ -466,9 +466,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  z-index: 10000;
   padding: 20px;
   animation: fadeInOverlay 0.3s ease;
+  overflow-y: auto;
 }
 
 @keyframes fadeInOverlay {
@@ -481,16 +482,17 @@ body {
 }
 
 .project-modal {
-  background: rgba(40, 44, 51, 0.85);
+  background: rgba(40, 44, 51, 0.95);
   backdrop-filter: blur(40px) saturate(180%);
   -webkit-backdrop-filter: blur(40px) saturate(180%);
   border: 1px solid rgba(199, 120, 221, 0.2);
   border-radius: 24px;
   max-width: 900px;
   width: 100%;
-  max-height: 90vh;
+  max-height: calc(100vh - 120px);
   overflow-y: auto;
   position: relative;
+  margin-top: 80px;
   box-shadow: 0 8px 32px 0 rgba(199, 120, 221, 0.15),
               0 0 100px 0 rgba(199, 120, 221, 0.05);
   animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -535,7 +537,7 @@ body {
   color: var(--color-text-primary);
   font-size: 24px;
   cursor: pointer;
-  z-index: 10;
+  z-index: 10001;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
@@ -2130,8 +2132,9 @@ body {
 @media (max-width: 768px) {
   .project-modal {
     margin: 10px;
-    max-height: 95vh;
+    max-height: calc(100vh - 100px);
     border-radius: 20px;
+    margin-top: 70px;
   }
 
   .modal-image {
@@ -2189,6 +2192,8 @@ body {
 
   .project-modal {
     border-radius: 16px;
+    margin-top: 60px;
+    max-height: calc(100vh - 80px);
   }
 
   .modal-image {
