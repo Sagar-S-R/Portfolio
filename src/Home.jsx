@@ -1,12 +1,78 @@
 import React, { useState } from "react";
 import "./Home.css";
-import Header from "./Header";
+import Header from "./components/Header";
+import Toast from "./components/Toast";
+import { createMessage } from "./api";
 
 function Home() {
   const [expandedProject, setExpandedProject] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [toast, setToast] = useState({
+    isVisible: false,
+    message: '',
+    type: 'success'
+  });
 
   const toggleProject = (projectId) => {
     setExpandedProject(expandedProject === projectId ? null : projectId);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const showToast = (message, type = 'success') => {
+    setToast({
+      isVisible: true,
+      message,
+      type
+    });
+  };
+
+  const hideToast = () => {
+    setToast(prev => ({
+      ...prev,
+      isVisible: false
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!formData.name || !formData.email || !formData.message) {
+      showToast('Please fill in all required fields', 'error');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const result = await createMessage(formData);
+      
+      if (result.success) {
+        showToast('Message sent successfully!', 'success');
+        setFormData({
+          name: '',
+          email: '',
+          message: ''
+        });
+      } else {
+        showToast(`Failed to send message: ${result.error}`, 'error');
+      }
+    } catch (error) {
+      showToast('An unexpected error occurred. Please try again.', 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Prevent body scroll when modal is open
@@ -594,7 +660,7 @@ function Home() {
 
               <div className="contact-box contact-form-box">
                 <h3 className="contact-box-title">Reach Me Out</h3>
-                <form className="contact-form">
+                <form className="contact-form" onSubmit={handleSubmit}>
                   <div className="form-group">
                     <label htmlFor="name">Name</label>
                     <input 
@@ -602,6 +668,8 @@ function Home() {
                       id="name" 
                       name="name" 
                       placeholder="Your name"
+                      value={formData.name}
+                      onChange={handleInputChange}
                       required 
                     />
                   </div>
@@ -612,16 +680,9 @@ function Home() {
                       id="email" 
                       name="email" 
                       placeholder="your.email@example.com"
+                      value={formData.email}
+                      onChange={handleInputChange}
                       required 
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="phone">Phone Number</label>
-                    <input 
-                      type="tel" 
-                      id="phone" 
-                      name="phone" 
-                      placeholder="+91 1234567890"
                     />
                   </div>
                   <div className="form-group">
@@ -631,10 +692,18 @@ function Home() {
                       name="message" 
                       rows="5"
                       placeholder="Your message here..."
+                      value={formData.message}
+                      onChange={handleInputChange}
                       required
                     ></textarea>
                   </div>
-                  <button type="submit" className="submit-btn">Send Message</button>
+                  <button 
+                    type="submit" 
+                    className="submit-btn"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Sending...' : 'Send Message'}
+                  </button>
                 </form>
               </div>
             </div>
@@ -684,6 +753,14 @@ function Home() {
           <p className="footer-copyright">© Copyright 2025. Made by Sagar S R</p>
         </div>
       </footer>
+
+      {/* Toast Notification */}
+      <Toast 
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
+      />
     </div>
   );
 }
