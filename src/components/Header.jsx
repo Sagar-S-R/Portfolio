@@ -141,7 +141,7 @@ export default function Header() {
             </a>
 
             <a 
-              href="https://www.linkedin.com/in/sagar-s-r/" 
+              href="https://www.linkedin.com/in/sagarsr" 
               target="_blank" 
               rel="noopener noreferrer"
               className="social-icon-link"
